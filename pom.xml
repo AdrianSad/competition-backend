@@ -18,6 +18,9 @@
         <kotlin.version>1.4.31</kotlin.version>
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <jackson-module-kotlin.version>2.12.2</jackson-module-kotlin.version>
+        <spring-security-core.version>5.4.5</spring-security-core.version>
     </properties>
     <dependencies>
         <dependency>
@@ -27,6 +30,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -79,6 +92,16 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
             <version>${springfox-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-module-kotlin.version}</version>
         </dependency>
     </dependencies>
 
