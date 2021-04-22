@@ -11,16 +11,16 @@ class CompetitionDto(
         val description: String = "",
         val category: String = "",
         val image: String = "",
-        val usernames: List<String> = Collections.emptyList()
+        val usernames: List<UserInfo> = Collections.emptyList()
 ) {
     companion object {
-        fun toCompetition(competition: Competition) = CompetitionDto(
+        fun toCompetitionDto(competition: Competition) = CompetitionDto(
                 id = competition.id,
                 title = competition.title,
                 description = competition.description,
                 category = competition.category,
                 image = competition.image,
-                usernames = competition.users.stream().map(UserInfo::username).toList()
+                usernames = competition.users
         )
     }
 }

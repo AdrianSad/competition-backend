@@ -1,10 +1,9 @@
 package pl.adrian.competitionbackend.competition.controller
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import pl.adrian.competitionbackend.competition.model.dto.CompetitionDto
+import pl.adrian.competitionbackend.competition.model.dto.CompetitionDtos
 import pl.adrian.competitionbackend.competition.model.dto.CreateCompetitionDto
 import pl.adrian.competitionbackend.competition.service.CompetitionService
 import pl.adrian.competitionbackend.user.model.dto.UserDetailsImpl
@@ -18,4 +17,14 @@ class CompetitionController(private val competitionService: CompetitionService) 
     fun createCompetition(@RequestBody @Valid createCompetitionDto: CreateCompetitionDto,
                           @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl) =
             competitionService.createCompetition(createCompetitionDto, userDetailsImpl);
+
+    @GetMapping
+    fun getUserCompetition(@AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): List<CompetitionDto> {
+        val competitions = competitionService.getUserCompetitions(userDetailsImpl);
+        return CompetitionDtos.toCompetitionDtos(competitions);
+    }
+
+    @GetMapping("/{id}")
+    fun getCompetition(@PathVariable id: String): CompetitionDto =
+            CompetitionDto.toCompetitionDto(competitionService.getCompetition(id));
 }
