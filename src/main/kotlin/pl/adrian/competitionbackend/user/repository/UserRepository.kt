@@ -3,6 +3,7 @@ package pl.adrian.competitionbackend.user.repository
 import pl.adrian.competitionbackend.user.model.entity.User
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 interface UserRepository : MongoRepository<User, String> {
