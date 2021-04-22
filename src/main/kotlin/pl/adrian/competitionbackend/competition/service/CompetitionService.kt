@@ -1,6 +1,8 @@
 package pl.adrian.competitionbackend.competition.service
 
 import org.springframework.stereotype.Service
+import pl.adrian.competitionbackend.competition.exception.model.CompetitionNotFoundException
+import pl.adrian.competitionbackend.competition.model.dto.CompetitionDto
 import pl.adrian.competitionbackend.competition.model.dto.CreateCompetitionDto
 import pl.adrian.competitionbackend.competition.model.entity.Competition
 import pl.adrian.competitionbackend.competition.repository.CompetitionRepository
@@ -20,5 +22,17 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         participants.add(createdBy);
 
         return competitionRepository.save(Competition.toCompetition(createCompetitionDto, participants.map { UserInfo.fromUser(it) }.toList()))
+    }
+
+    fun getUserCompetitions(user: UserDetailsImpl): List<Competition> =
+            competitionRepository.findAllByUsersContains(UserInfo.fromUserDetails(user))
+
+    fun getCompetition(id: String): Competition {
+        val competition = competitionRepository.findById(id)
+        if (competition.isPresent) {
+            return competition.get()
+        } else {
+            throw CompetitionNotFoundException()
+        }
     }
 }
