@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import pl.adrian.competitionbackend.competition.model.dto.CompetitionDto
 import pl.adrian.competitionbackend.competition.model.dto.CompetitionDtos
 import pl.adrian.competitionbackend.competition.model.dto.CreateCompetitionDto
+import pl.adrian.competitionbackend.competition.model.dto.ResultDto
 import pl.adrian.competitionbackend.competition.service.CompetitionService
 import pl.adrian.competitionbackend.user.model.dto.UserDetailsImpl
 import javax.validation.Valid
@@ -37,4 +38,10 @@ class CompetitionController(private val competitionService: CompetitionService) 
     fun attendCompetition(@PathVariable id: String,
                          @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
             CompetitionDto.toCompetitionDto(competitionService.attendCompetition(userDetailsImpl, id));
+
+    @PostMapping("/add-result/{id}")
+    fun addUserResult(@PathVariable id: String,
+                      @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl,
+                      @RequestBody @Valid result: ResultDto): CompetitionDto =
+            CompetitionDto.toCompetitionDto(competitionService.addUserResult(result.result, userDetailsImpl, id))
 }
