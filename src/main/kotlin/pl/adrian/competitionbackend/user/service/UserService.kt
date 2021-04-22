@@ -17,8 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import pl.adrian.competitionbackend.user.exception.model.UserNotFoundException
+import java.util.*
 import java.util.stream.Collectors
 
 @Service
@@ -57,5 +60,25 @@ class UserService(private val userRepository: UserRepository,
         user.password = passwordEncoder.encode(createUserDto.password)
         user.roles = userRoles
         return userRepository.save(user)
+    }
+
+    fun getUsersByUsername(usernames: List<String>): List<User> {
+        var users: MutableList<User> = mutableListOf()
+        usernames.forEach{users.add(getUserByUserName(it))}
+        return users
+    }
+
+    fun getUser(id: String): User {
+        val user = userRepository.findById(id)
+
+        if(user.isPresent){
+            return user.get()
+        } else {
+            throw UserNotFoundException()
+        }
+    }
+
+    fun getUserByUserName(username: String): User {
+        return userRepository.findByUsername(username) ?: throw UserNotFoundException()
     }
 }
