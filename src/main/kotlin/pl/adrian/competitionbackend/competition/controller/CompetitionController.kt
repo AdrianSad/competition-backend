@@ -27,4 +27,14 @@ class CompetitionController(private val competitionService: CompetitionService) 
     @GetMapping("/{id}")
     fun getCompetition(@PathVariable id: String): CompetitionDto =
             CompetitionDto.toCompetitionDto(competitionService.getCompetition(id));
+
+    @PostMapping("/leave/{id}")
+    fun leaveCompetition(@PathVariable id: String,
+                         @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
+            CompetitionDto.toCompetitionDto(competitionService.leaveCompetition(userDetailsImpl, id));
+
+    @PostMapping("/attend/{id}")
+    fun attendCompetition(@PathVariable id: String,
+                         @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
+            CompetitionDto.toCompetitionDto(competitionService.attendCompetition(userDetailsImpl, id));
 }
