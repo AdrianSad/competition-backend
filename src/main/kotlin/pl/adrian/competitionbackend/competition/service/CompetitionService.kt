@@ -27,7 +27,9 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         val createdBy: User = userService.getUser(user.id.toString())
         participants.add(createdBy);
 
-        return competitionRepository.save(Competition.toCompetition(createCompetitionDto, participants.map { UserInfo.fromUser(it) }.toList()))
+        return competitionRepository.save(Competition.toCompetition(createCompetitionDto,
+                participants.map { UserInfo.fromUser(it) }.toList(),
+                user.id.toString()))
     }
 
     fun getUserCompetitions(user: UserDetailsImpl): List<Competition> {
