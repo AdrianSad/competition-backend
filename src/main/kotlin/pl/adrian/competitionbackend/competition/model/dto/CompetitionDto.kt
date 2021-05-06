@@ -11,6 +11,7 @@ class CompetitionDto(
         val description: String = "",
         val category: String = "",
         val image: String = "",
+        val addedById: String = "",
         val usernames: List<UserInfo> = Collections.emptyList()
 ) {
     companion object {
@@ -20,6 +21,7 @@ class CompetitionDto(
                 description = competition.description,
                 category = competition.category,
                 image = competition.image,
+                addedById = competition.addedById,
                 usernames = competition.users
         )
     }

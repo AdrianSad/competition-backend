@@ -15,14 +15,16 @@ data class Competition(
         var description: String = "",
         var category: String = "",
         var image: String = "",
+        var addedById: String = "",
         var users: List<UserInfo> = Collections.emptyList()
 ) {
     companion object {
-        fun toCompetition(createCompetition: CreateCompetitionDto, users: List<UserInfo>) = Competition(
+        fun toCompetition(createCompetition: CreateCompetitionDto, users: List<UserInfo>, addedById: String) = Competition(
                 title = createCompetition.title,
                 description = createCompetition.description,
                 category = createCompetition.category,
                 image = createCompetition.image,
+                addedById = addedById,
                 users = users
         )
     }
