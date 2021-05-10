@@ -53,4 +53,8 @@ class CompetitionController(private val competitionService: CompetitionService) 
                 competitionService.getLabels(competition),
                 competitionService.getLabelsForWholeCompetition(competition))
     }
+    @DeleteMapping("/{id}")
+    fun deleteCompetition(@PathVariable id: String,
+                          @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl) =
+            competitionService.delete(id, userDetailsImpl.id.toString())
 }
