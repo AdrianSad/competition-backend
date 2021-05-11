@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import pl.adrian.competitionbackend.competition.model.dto.CreateCompetitionDto
 import pl.adrian.competitionbackend.user.model.dto.UserDto
 import pl.adrian.competitionbackend.user.model.dto.UserInfo
+import java.time.LocalDate
 import java.util.*
 
 @Document
@@ -16,6 +17,9 @@ data class Competition(
         var category: String = "",
         var image: String = "",
         var addedById: String = "",
+        var bestAverageUserId: String = "",
+        var bestAverage: Double = 0.0,
+        val endDate: LocalDate? = null,
         var users: List<UserInfo> = Collections.emptyList()
 ) {
     companion object {
@@ -24,6 +28,7 @@ data class Competition(
                 description = createCompetition.description,
                 category = createCompetition.category,
                 image = createCompetition.image,
+                endDate = createCompetition.endDate,
                 addedById = addedById,
                 users = users
         )

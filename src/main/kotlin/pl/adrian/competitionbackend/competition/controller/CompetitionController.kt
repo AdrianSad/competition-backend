@@ -26,8 +26,13 @@ class CompetitionController(private val competitionService: CompetitionService) 
     }
 
     @GetMapping("/{id}")
-    fun getCompetition(@PathVariable id: String): CompetitionDto =
-            CompetitionDto.toCompetitionDto(competitionService.getCompetition(id));
+    fun getCompetition(@PathVariable id: String): CompetitionDto {
+        val competition = competitionService.getCompetition(id)
+        return CompetitionDto.toCompetitionDtoWithLabels(competition,
+                competitionService.getLabels(competition),
+                competitionService.getLabelsForWholeCompetition(competition))
+
+    };
 
     @PostMapping("/leave/{id}")
     fun leaveCompetition(@PathVariable id: String,
@@ -36,12 +41,16 @@ class CompetitionController(private val competitionService: CompetitionService) 
 
     @PostMapping("/attend/{id}")
     fun attendCompetition(@PathVariable id: String,
-                         @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
+                          @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
             CompetitionDto.toCompetitionDto(competitionService.attendCompetition(userDetailsImpl, id));
 
     @PostMapping("/add-result/{id}")
     fun addUserResult(@PathVariable id: String,
                       @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl,
-                      @RequestBody @Valid result: ResultDto): CompetitionDto =
-            CompetitionDto.toCompetitionDto(competitionService.addUserResult(result.result, userDetailsImpl, id))
+                      @RequestBody @Valid result: ResultDto): CompetitionDto {
+        val competition = competitionService.addUserResult(result.result, userDetailsImpl, id)
+        return CompetitionDto.toCompetitionDtoWithLabels(competition,
+                competitionService.getLabels(competition),
+                competitionService.getLabelsForWholeCompetition(competition))
+    }
 }
