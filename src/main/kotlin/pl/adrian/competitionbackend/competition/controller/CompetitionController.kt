@@ -36,7 +36,7 @@ class CompetitionController(private val competitionService: CompetitionService) 
 
     @PostMapping("/attend/{id}")
     fun attendCompetition(@PathVariable id: String,
-                         @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
+                          @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl): CompetitionDto =
             CompetitionDto.toCompetitionDto(competitionService.attendCompetition(userDetailsImpl, id));
 
     @PostMapping("/add-result/{id}")
@@ -44,4 +44,9 @@ class CompetitionController(private val competitionService: CompetitionService) 
                       @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl,
                       @RequestBody @Valid result: ResultDto): CompetitionDto =
             CompetitionDto.toCompetitionDto(competitionService.addUserResult(result.result, userDetailsImpl, id))
+
+    @DeleteMapping("/{id}")
+    fun deleteCompetition(@PathVariable id: String,
+                          @AuthenticationPrincipal userDetailsImpl: UserDetailsImpl) =
+            competitionService.delete(id, userDetailsImpl.id.toString())
 }

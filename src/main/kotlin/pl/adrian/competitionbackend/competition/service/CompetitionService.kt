@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import pl.adrian.competitionbackend.competition.exception.model.AlreadyParticipateException
 import pl.adrian.competitionbackend.competition.exception.model.CompetitionNotFoundException
@@ -22,7 +23,7 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
                          private val userService: UserService,
                          private val mongoTemplate: MongoTemplate) {
 
-    fun createCompetition(createCompetitionDto: CreateCompetitionDto, user: UserDetailsImpl) : Competition {
+    fun createCompetition(createCompetitionDto: CreateCompetitionDto, user: UserDetailsImpl): Competition {
         val participants: MutableList<User> = userService.getUsersByUsername(createCompetitionDto.usernames.map { it.username }).toMutableList()
         val createdBy: User = userService.getUser(user.id.toString())
         participants.add(createdBy);
@@ -51,7 +52,7 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         val competition = getCompetition(id);
 
         val userInfo = UserInfo.fromUserDetails(user)
-        if(competition.users.any{it.id.equals(userInfo.id)}) {
+        if (competition.users.any { it.id.equals(userInfo.id) }) {
             val competitions = competition.users.toMutableList()
             competitions.remove(userInfo);
             competition.users = competitions
@@ -63,7 +64,7 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         val competition = getCompetition(id);
 
         val userInfo = UserInfo.fromUserDetails(userDetailsImpl)
-        return if(competition.users.any{it.id.equals(userInfo.id)}) {
+        return if (competition.users.any { it.id.equals(userInfo.id) }) {
             throw AlreadyParticipateException()
         } else {
             val competitions = competition.users.toMutableList()
@@ -79,5 +80,15 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         user.statistics[LocalDate.now()] = result
         competition.users.find { it.id.equals(userDetailsImpl.id) }?.statistics = user.statistics
         return competitionRepository.save(competition)
+    }
+
+    fun delete(competitionId: String, userId: String) {
+        val competition = getCompetition(competitionId);
+
+        if (competition.addedById != userId) {
+            throw AccessDeniedException("User is not a competition creator")
+        }
+
+        competitionRepository.deleteById(competitionId)
     }
 }
