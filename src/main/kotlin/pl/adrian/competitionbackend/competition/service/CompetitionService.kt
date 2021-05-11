@@ -76,10 +76,9 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
     fun leaveCompetition(user: UserDetailsImpl, id: String): Competition {
         val competition = getCompetition(id);
 
-        val userInfo = UserInfo.fromUserDetails(user)
-        if (competition.users.any { it.id.equals(userInfo.id) }) {
+        if (competition.users.any { it.id.equals(user.id) }) {
             val competitions = competition.users.toMutableList()
-            competitions.remove(userInfo);
+            competitions.removeIf { it.id.equals(user.id) }
             competition.users = competitions
             return competitionRepository.save(competition)
         } else throw NotParticipateException()
@@ -109,8 +108,12 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
             if (userCompetition.statistics.lastEntry().key == LocalDate.now()) {
                 userCompetition.statistics.pollLastEntry()
             }
-            val sum: Int = userCompetition.statistics.lastEntry().value.sum + result
-            userCompetition.statistics[LocalDate.now()] = Day(result, sum)
+            if (userCompetition.statistics.isEmpty()) {
+                userCompetition.statistics[LocalDate.now()] = Day(result, result)
+            } else {
+                val sum: Int = userCompetition.statistics.lastEntry().value.sum + result
+                userCompetition.statistics[LocalDate.now()] = Day(result, sum)
+            }
         }
         userCompetition.participatedDays = userCompetition.statistics.count()
         userCompetition.totalSum = userCompetition.statistics.values.map(Day::amount).sum()
@@ -129,9 +132,15 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
             val daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), competition.endDate)
             val bestUserSum = competition.users.find { it.id.equals(competition.bestAverageUserId) }!!.totalSum
             val predictedMaxResult = bestUserSum + competition.bestAverage * daysLeft
-            val predictedUserResult = predictedMaxResult - userCompetition.totalSum + 1
-            ceil(predictedUserResult)
-            val resultPerDay = predictedUserResult.toInt() / daysLeft.toInt()
+            var predictedUserResult = 0.0
+            var resultPerDay: Int = 0
+
+            while (predictedUserResult < predictedMaxResult) {
+                resultPerDay = resultPerDay.plus(1)
+                predictedUserResult = ((resultPerDay * daysLeft.minus(1)) + userCompetition.totalSum).toDouble()
+                ceil(predictedUserResult)
+            }
+
             var datePlusOne: LocalDate = LocalDate.now()
 
             while (datePlusOne.isBefore(competition.endDate!!.minusDays(1))) {
