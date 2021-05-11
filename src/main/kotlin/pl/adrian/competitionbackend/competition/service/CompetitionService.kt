@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import pl.adrian.competitionbackend.competition.exception.model.AlreadyParticipateException
+import pl.adrian.competitionbackend.competition.exception.model.CompetitionEndedException
 import pl.adrian.competitionbackend.competition.exception.model.CompetitionNotFoundException
 import pl.adrian.competitionbackend.competition.exception.model.NotParticipateException
 import pl.adrian.competitionbackend.competition.model.dto.CreateCompetitionDto
@@ -102,6 +103,9 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         val competition = getCompetition(id)
         val userCompetition = competition.users.find { it.id.equals(userDetailsImpl.id) }
                 ?: throw NotParticipateException()
+        if (competition.endDate!!.isAfter(LocalDate.now())) {
+            throw CompetitionEndedException()
+        }
         if (userCompetition.statistics.isEmpty()) {
             userCompetition.statistics[LocalDate.now()] = Day(result, result)
         } else {
