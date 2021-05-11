@@ -1,24 +1,29 @@
 package pl.adrian.competitionbackend.competition.model.dto
 
+import java.time.LocalDate
 import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 class CreateCompetitionDto(
 
-        @NotEmpty
+        @field:NotEmpty
         val title: String = "",
 
-        @NotEmpty
+        @field:NotEmpty
         val description: String = "",
 
-        @NotEmpty
+        @field:NotEmpty
         val category: String = "",
 
-        @NotEmpty
+        @field:NotEmpty
         val image: String = "",
 
-        @NotEmpty
-        @Valid
+        @field:NotNull
+        val endDate: LocalDate? = null,
+
+        @field:NotEmpty
+        @field:Valid
         val usernames: List<Username> = Collections.emptyList()
 )
