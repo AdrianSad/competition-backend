@@ -19,6 +19,7 @@ class CompetitionDto(
         val usernames: List<UserInfo> = Collections.emptyList(),
         val labels: Set<LocalDate> = Collections.emptySet(),
         val labelsWholeCompetition: Set<LocalDate> = Collections.emptySet(),
+        val ended: Boolean = false,
 ) {
     companion object {
         fun toCompetitionDto(competition: Competition) = CompetitionDto(
@@ -31,7 +32,8 @@ class CompetitionDto(
                 bestAverageUserId = competition.bestAverageUserId,
                 bestAverage = competition.bestAverage,
                 endDate = competition.endDate,
-                usernames = competition.users
+                usernames = competition.users,
+                ended = competition.endDate!!.isBefore(LocalDate.now())
         )
 
         fun toCompetitionDtoWithLabels(competition: Competition, labels: Set<LocalDate>, labelsWholeCompetition: Set<LocalDate>) = CompetitionDto(
@@ -47,6 +49,7 @@ class CompetitionDto(
                 endDate = competition.endDate,
                 labels = labels,
                 labelsWholeCompetition = labelsWholeCompetition,
+                ended = competition.endDate!!.isBefore(LocalDate.now())
         )
     }
 }
