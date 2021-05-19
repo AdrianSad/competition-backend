@@ -103,7 +103,7 @@ class CompetitionService(private val competitionRepository: CompetitionRepositor
         val competition = getCompetition(id)
         val userCompetition = competition.users.find { it.id.equals(userDetailsImpl.id) }
                 ?: throw NotParticipateException()
-        if (competition.endDate!!.isAfter(LocalDate.now())) {
+        if (competition.endDate!!.isBefore(LocalDate.now())) {
             throw CompetitionEndedException()
         }
         if (userCompetition.statistics.isEmpty()) {

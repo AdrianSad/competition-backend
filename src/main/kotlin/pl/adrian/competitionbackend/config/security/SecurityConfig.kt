@@ -55,7 +55,9 @@ class SecurityConfig(private val userDetailsService: UserDetailsServiceImpl,
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.cors().configurationSource {
-            CorsConfiguration().applyPermitDefaultValues()
+            val applyPermitDefaultValues = CorsConfiguration().applyPermitDefaultValues()
+            applyPermitDefaultValues.addAllowedMethod(HttpMethod.DELETE)
+            applyPermitDefaultValues
         }.and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
