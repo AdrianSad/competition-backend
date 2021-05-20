@@ -12,7 +12,7 @@ data class CreateUserDto(
         val email: String = "",
 
         @field:NotEmpty
-        @field:Size(min = 5, max = 20)
+        @field:Size(min = 3, max = 20)
         @field:Pattern(regexp = "^[0-9A-Za-z]+$", message = "Nazwa użytkownika nie powinna zawierać znaków specjalnych")
         val username: String = "",
 
